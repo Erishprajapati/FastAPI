@@ -2,37 +2,33 @@ from fastapi import FastAPI
 from typing import Optional
 from pydantic import BaseModel
 
-app = FastAPI() #creating instance of the fastapi
+app = FastAPI() #created instance
 
-@app.get('/blog') #this is the url when the url is clicked
-def index(limit=10, published:bool = True, sort:Optional[str] = None):
-    if published:#this is normal function
-        return {'data': f'{limit} published blog list from the database'}
+@app.get('/library')
+def index(limit = 10, published:bool = True, sort:Optional[str] = None):
+    if published:
+        return {'data' : f'{limit} published books from database of Book lists'}
     else:
-        return {'data': f'{limit} blog list from the database'}
+        return None
 
-@app.get('/blog/unpublished')
-def unpublished_blog():
-    return {'data': 'all unpublished blog'}
+@app.get('/library/unreleased') 
+def unreleased_books():
+    return {'data' : 'List of unreleased books'}
 
-@app.get('/blog/{id}')
-def getblogby_id(id:int):
-    #fetching some particular blog
-    return {'data' : id}
+@app.get('/library/{book_id}')
+def specific_book(book_id:int):
+    return {'data': 2}
 
-# @app.get('/about')
-# def about():
-#     return {"data": 'about page'}  
+@app.get('/library/{book_id}/reviews')
+def book_reviews(book_id,limit = 10):
+    return {'data' :{'first review', 'second review', 'third review'}}  
 
-@app.get('/blog/{id}/comments')
-def comments(id:int, limit = 10):
-    return {'data':{'1','2','3','4','5','6','7','8','9','10','11','12'}}
-class Blog(BaseModel):
-    title: str
+class Book(BaseModel):
+    title : str
     description: str
-    published_at : Optional[bool]
+    published: Optional[bool]
+    author : str
 
-@app.post('/blog/create')
-def create_blog(request: Blog):
-    return {'data' : f"Blog created succesfully with title as {Blog.title}"}
-
+@app.post('/library')
+def add_book(book : Book):
+    return {'data' : f'Book is added by {book.title}'}
